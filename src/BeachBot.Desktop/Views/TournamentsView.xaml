@@ -1,0 +1,132 @@
+<UserControl x:Class="BeachBot.Desktop.Views.TournamentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:BeachBot.Desktop.ViewModels"
+             xmlns:model="clr-namespace:BeachBot.Core.Models;assembly=BeachBot.Core"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:TournamentsViewModel}">
+    <UserControl.Resources>
+        <Style x:Key="Chip" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Surface2Brush}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+        </Style>
+
+        <DataTemplate x:Key="TournamentTemplate" DataType="{x:Type model:Tournament}">
+            <Border Style="{StaticResource Card}" Padding="14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding Name}" FontFamily="Segoe UI Semibold" FontSize="15" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Border Style="{StaticResource Chip}">
+                                <TextBlock Text="{Binding SeriesName}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                            </Border>
+                            <Border Style="{StaticResource Chip}">
+                                <TextBlock Text="{Binding CategoryName}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" />
+                            </Border>
+                            <Border Style="{StaticResource Chip}">
+                                <TextBlock FontSize="12" Foreground="{StaticResource TextSecondaryBrush}">
+                                    <Run Text="{Binding TeamCountCurrent, Mode=OneWay}" /><Run Text="/" /><Run Text="{Binding MaxTeams, Mode=OneWay}" /><Run Text=" teams" />
+                                </TextBlock>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Foreground="{StaticResource TextSecondaryBrush}" Margin="0,8,0,0" FontSize="12">
+                            <Run Text="🏐 Game:" />
+                            <Run Text="{Binding GameDate, Converter={StaticResource LocalDateTime}, ConverterParameter='dd.MM.yyyy', Mode=OneWay}" />
+                        </TextBlock>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="Select" Style="{StaticResource AccentButton}"
+                            VerticalAlignment="Center"
+                            Command="{Binding DataContext.SelectCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            CommandParameter="{Binding}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,16">
+            <Button Content="← Back" Style="{StaticResource SubtleButton}" HorizontalAlignment="Left"
+                    Padding="0,4" Command="{Binding BackCommand}" />
+            <TextBlock Text="Choose a tournament" Style="{StaticResource Heading}" Margin="0,6,0,0" />
+            <TextBlock Text="Browse upcoming tournaments, then pick one to schedule a registration."
+                       Style="{StaticResource Subheading}" Margin="0" />
+        </StackPanel>
+
+        <!-- Filters -->
+        <Grid Grid.Row="1" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                <TextBlock Text="City" Style="{StaticResource SectionTitle}" />
+                <TextBox Text="{Binding CityFilter, UpdateSourceTrigger=PropertyChanged}" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                <TextBlock Text="Series" Style="{StaticResource SectionTitle}" />
+                <ComboBox ItemsSource="{Binding SeriesOptions}" SelectedItem="{Binding SelectedSeries}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Category" Style="{StaticResource SectionTitle}" />
+                <ComboBox ItemsSource="{Binding CategoryOptions}" SelectedItem="{Binding SelectedCategory}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Toggle + result count -->
+        <Grid Grid.Row="2" Margin="0,0,0,10">
+            <CheckBox Content="Only where registration hasn't opened yet"
+                      IsChecked="{Binding OnlyNotYetOpen}" VerticalAlignment="Center" />
+            <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="12">
+                <Run Text="{Binding ResultCount, Mode=OneWay}" /><Run Text=" tournaments" />
+            </TextBlock>
+        </Grid>
+
+        <!-- List -->
+        <Grid Grid.Row="3">
+            <ListBox ItemsSource="{Binding Tournaments}" ItemTemplate="{StaticResource TournamentTemplate}"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     VirtualizingStackPanel.IsVirtualizing="True"
+                     VirtualizingStackPanel.VirtualizationMode="Recycling" />
+
+            <TextBlock Text="Loading tournaments…" Foreground="{StaticResource TextSecondaryBrush}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsEmpty}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="No tournaments match your filters." Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}"
+                       HorizontalAlignment="Center" VerticalAlignment="Top"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVis}}" />
+        </Grid>
+    </Grid>
+</UserControl>

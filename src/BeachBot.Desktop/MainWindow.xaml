@@ -1,0 +1,33 @@
+<Window x:Class="BeachBot.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:BeachBot.Desktop.ViewModels"
+        mc:Ignorable="d"
+        Title="BeachBot" Height="720" Width="1040" MinHeight="560" MinWidth="820"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}"
+        d:DataContext="{d:DesignInstance vm:ShellViewModel}">
+    <DockPanel>
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="20,14">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🏐" FontSize="22" VerticalAlignment="Center" Margin="0,0,10,0" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="BeachBot" FontFamily="Segoe UI Semibold" FontSize="18" />
+                        <TextBlock Text="Beach volleyball tournament registration"
+                                   Foreground="{StaticResource TextSecondaryBrush}" FontSize="11" />
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Text="{Binding UserStatus}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                           Foreground="{StaticResource TextSecondaryBrush}" />
+            </Grid>
+        </Border>
+
+        <!-- Active screen -->
+        <ContentControl Content="{Binding CurrentViewModel}" />
+    </DockPanel>
+</Window>

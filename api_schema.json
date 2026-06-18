@@ -1,0 +1,368 @@
+{
+  "_about": "Reverse-engineered DDP (Meteor) API for beachvolleyball.nrw. Each entry describes one WebSocket method: its request (the DDP 'method' message) and a representative real response. Use the response examples as a base for DTOs. Captured 2026-06-17 against wss://www.beachvolleyball.nrw/websocket.",
+  "_conventions": {
+    "transport": "DDP over raw WebSocket. A call is sent as {\"msg\":\"method\",\"method\":<name>,\"params\":[...],\"id\":<string>} and the reply is {\"msg\":\"result\",\"id\":<same>,\"result\":<payload>} or {\"msg\":\"result\",\"id\":<same>,\"error\":{...}}.",
+    "ejsonDate": "All timestamps are EJSON-wrapped: {\"$date\": <unixMillis:int>}. Model as a value object / epoch-millis long.",
+    "ids": "All _id fields are Meteor random strings (17 chars), e.g. 'BZatkurzpjZZho2Hs'. Series/category ids are short slugs ('h','m','b','d').",
+    "nullable": "Fields shown with null in examples are nullable. Date fields can also be null. rankings maps may be empty.",
+    "maps": "scoreDistribution / prizeDistribution / prizeMinimum / dvvIds are objects keyed by a STRING (bracket size or year) -> value. rankings is keyed by series-id -> ranking object.",
+    "germanText": "String content may contain German text and umlauts (UTF-8)."
+  },
+
+  "connect": {
+    "_note": "Handshake, not a method call. Sent once after the socket opens.",
+    "request": { "msg": "connect", "version": "1", "support": ["1", "pre2", "pre1"] },
+    "response": { "msg": "connected", "session": "string-session-id" }
+  },
+
+  "login": {
+    "_note": "Password is SHA-256 hashed client-side. type is 'password'.",
+    "request": {
+      "msg": "method",
+      "method": "login",
+      "params": [
+        { "user": { "email": "string" }, "password": { "digest": "sha256-hex-string", "algorithm": "sha-256" } }
+      ],
+      "id": "string"
+    },
+    "response": {
+      "id": "Fqj2E4DQFJv2zzhnm",
+      "token": "9g1GeWl-qkt7xEJYkkd5EyCw4R5mCJLm7P5XiRf-Eiw",
+      "tokenExpires": { "$date": 1789468270474 },
+      "type": "password"
+    }
+  },
+
+  "tournaments.list": {
+    "_note": "Paged list. The tournament objects here are the LIGHT form (subset of getDetail). 'series'/'category'/'facility' are ids; 'seriesLink'/'categoryLink' embed names + gender constraint. gameDateTo present only for multi-day events.",
+    "request": {
+      "msg": "method",
+      "method": "tournaments.list",
+      "params": [ { "view": "upcoming", "limit": 100, "skip": 0, "userId": "string|null" } ],
+      "id": "string"
+    },
+    "response": {
+      "tournaments": [
+        {
+          "_id": "BZatkurzpjZZho2Hs",
+          "createdAt": { "$date": 1779961640799 },
+          "series": "h",
+          "category": "b",
+          "facility": "ZsKdZLmXoArcCdodp",
+          "cityCache": "Gütersloh",
+          "teamType": "default",
+          "teamSize": 2,
+          "checkInDeadline": { "$date": 1780912800000 },
+          "maxTeams": 9,
+          "gameDate": { "$date": 1781690400000 },
+          "gameDateTo": { "$date": 1781863200000 },
+          "technicalMeeting": { "$date": 1779980429081 },
+          "teamCountCurrent": 10,
+          "teamCountApproved": 9,
+          "teamCountEndResults": 0,
+          "host": "eGFRmdi9gMQouL4rx",
+          "state": "approved",
+          "endResultsPublished": false,
+          "gamesPublished": true,
+          "publishedAt": { "$date": 1779966864108 },
+          "seriesLink": { "_id": "h", "name": "Herren", "teamConstraints": { "gender": "male" } },
+          "categoryLink": { "_id": "b", "name": "B" },
+          "resolvedName": "Gütersloh"
+        }
+      ],
+      "tournamentsCount": 632
+    }
+  },
+
+  "tournament.getDetail": {
+    "_note": "Full tournament plus related lookup objects. 'series'/'category' are the resolved objects for this tournament; 'allSeries'/'allCategories' are the valid options. 'facility' is double-wrapped (Astronomy/$value.values is a JSON STRING that must be parsed again). 'checkInStartDeadline' is when REGISTRATION OPENS.",
+    "request": {
+      "msg": "method",
+      "method": "tournament.getDetail",
+      "params": [ "tournamentId" ],
+      "id": "string"
+    },
+    "response": {
+      "tournament": {
+        "_id": "BZatkurzpjZZho2Hs",
+        "series": "h",
+        "category": "b",
+        "facility": "ZsKdZLmXoArcCdodp",
+        "cityCache": "Gütersloh",
+        "relatedTournaments": [],
+        "relatedTournamentsSharePrize": false,
+        "teamType": "default",
+        "teamSize": 2,
+        "admissionFee": 33,
+        "admissionFeeEarly": 28,
+        "prize": 60,
+        "scoreDistribution": { "8": [48, 40, 32, 24, 16, 16, 8, 8] },
+        "scoreMode": "by_actual_teams",
+        "checkInStartDeadline": { "$date": 1780246800000 },
+        "checkInDeadline": { "$date": 1780912800000 },
+        "checkInDeadlineAuto": true,
+        "seedingDeadline": { "$date": 1781517600000 },
+        "seedingDeadlineAuto": true,
+        "wildcardDeadline": { "$date": 1780912800000 },
+        "wildcardDeadlineAuto": true,
+        "allocationDeadline": { "$date": 1780999200000 },
+        "allocationDeadlineAuto": true,
+        "finalCheckInDeadline": { "$date": 1781589600000 },
+        "finalCheckInDeadlineAuto": true,
+        "finalCheckOutDeadline": null,
+        "freezeDeadline": { "$date": 1781632800000 },
+        "freezeDeadlineAuto": true,
+        "maxTeams": 9,
+        "courtCount": 3,
+        "gameDate": { "$date": 1781690400000 },
+        "technicalMeeting": { "$date": 1779980429081 },
+        "teamCountCurrent": 10,
+        "teamCountApproved": 9,
+        "teamCountEndResults": 0,
+        "suggestionComment": "Turnierbeginn 17:15 Uhr.\n...",
+        "dvv": {},
+        "host": "eGFRmdi9gMQouL4rx",
+        "additionalHosts": [],
+        "admissionAllocation": {
+          "wildcardsHost": 1,
+          "wildcardsHostAuto": true,
+          "wildcardsHostAdmissionConstraints": true,
+          "wildcardsOrganization": 0,
+          "wildcardsDvv": 0,
+          "byDvvPoints": 0,
+          "byRegistrationDate": -1,
+          "byWvvPoints": 0,
+          "byQualification": 0
+        },
+        "qualificationMaxTeams": 0,
+        "qualificationTournamentAllocation": {
+          "wildcardsHost": 0,
+          "wildcardsHostAuto": true,
+          "wildcardsHostAdmissionConstraints": false,
+          "wildcardsOrganization": 0,
+          "wildcardsDvv": 0,
+          "byDvvPoints": 0,
+          "byRegistrationDate": -1,
+          "byWvvPoints": 0,
+          "byQualification": 0
+        },
+        "dvvFactor": 0,
+        "state": "approved",
+        "seedsPublished": true,
+        "seedsFrozen": true,
+        "allocationPublished": true,
+        "allocationModified": false,
+        "allocationSimulationPublished": false,
+        "registrationsHidden": false,
+        "endResultsPublished": false,
+        "endResultsModified": false,
+        "endResultsPricesModified": false,
+        "gamesPublished": true,
+        "addReferees": false,
+        "allowPlayerScoreSubmission": true,
+        "games": { "results": [ { "score": [], "setResults": [], "extra": "Feld 4" } ] },
+        "paymentsFinalized": false,
+        "paymentsExported": false,
+        "paymentsCreditExported": false,
+        "paymentsHostExported": false,
+        "gameMode": "poolPlay9Sing",
+        "additionalRankingSeries": {},
+        "publishedAt": { "$date": 1779966864108 }
+      },
+      "series": {
+        "_id": "h",
+        "name": "Herren",
+        "priority": 10,
+        "active": true,
+        "dvvIds": { "2025": 302, "2026": 336 },
+        "categoriesIds": ["m", "p", "a-plus", "a", "b", "b-plus", "b-finale", "c", "c-finale", "d", "0", "w"],
+        "teamConstraints": { "gender": "male" }
+      },
+      "category": {
+        "_id": "b",
+        "name": "B",
+        "priority": 0,
+        "admissionFee": 33,
+        "admissionFeeEarly": 28,
+        "hostFee": 800,
+        "minimumTeams": 6,
+        "prizeMinimum": { "8": 225, "12": 340, "16": 450, "20": 560, "24": 675 },
+        "scoreDistribution": { "8": [48, 40, 32, 24, 16, 16, 8, 8] },
+        "prizeDistribution": { "20": [50, 30, 20], "64": [40, 30, 20, 10] },
+        "qualificationTournament": true,
+        "checkInDeadline": { "daysBefore": 8, "dayOfTheWeek": 1, "time": 12 },
+        "allocationDeadline": { "daysBefore": 8, "dayOfTheWeek": 2, "time": 12 },
+        "seedingDeadline": { "daysBefore": 1, "dayOfTheWeek": 1, "time": 12 },
+        "wildcardDeadline": { "daysBefore": 8, "dayOfTheWeek": 1, "time": 12 },
+        "finalCheckInDeadline": { "daysBefore": 1, "dayOfTheWeek": null, "time": 8 },
+        "admissionAllocation": {
+          "wildcardsOrganization": 0,
+          "byDvvPoints": 0,
+          "byWvvPoints": 0,
+          "byRegistrationDate": -1,
+          "wildcardsHost": 0,
+          "wildcardsHostAuto": true,
+          "wildcardsHostAdmissionConstraints": true
+        },
+        "mode": ["Double Out"],
+        "isPopular": true,
+        "freezeDeadline": { "daysBefore": 1, "time": 20 }
+      },
+      "allSeries": [ "<same shape as series above>" ],
+      "allCategories": [ "<same shape as category above>" ],
+      "facility": {
+        "_comment": "Astronomy-wrapped; $value.values is a JSON STRING that must be parsed again to get the Facility. Nested location/gpsCoordinate are wrapped the same way.",
+        "$type": "Astronomy",
+        "$value": {
+          "class": "Facility",
+          "values": "{\"_id\":\"ZsKdZLmXoArcCdodp\",\"title\":\"Gütersloher TV\",\"courtCount\":3,\"publicAccess\":true,\"location\":{\"...\":\"nested Astronomy-wrapped Location with street, houseNumber, zipCode, city, formattedAddress, gpsCoordinate\"}}",
+          "isNew": true
+        }
+      },
+      "gameMode": { "_id": "poolPlay9Sing", "name": "9 Pool Play", "hasTree": true },
+      "resolvedHost": {
+        "isAdmin": false,
+        "_id": "eGFRmdi9gMQouL4rx",
+        "name": "Beachvolleyball Gütersloher TV",
+        "club": "Gütersloher TV v. 1879 e.V.",
+        "email": "beachguetersloh@web.de",
+        "phone": "+4917672666065"
+      }
+    }
+  },
+
+  "tournament.getTeams": {
+    "_note": "Top-level has three arrays. 'teams[].players' are user ids (used to detect already-registered). 'signupDate' drives first-come allocation. 'players' and 'clubs' are denormalized lookup tables for the players referenced by the teams.",
+    "request": {
+      "msg": "method",
+      "method": "tournament.getTeams",
+      "params": [ "tournamentId" ],
+      "id": "string"
+    },
+    "response": {
+      "teams": [
+        {
+          "_id": "tCS68bCAtW4AFs6X9",
+          "players": ["YsoCa6GoTzybbd7iK", "Dz67SK4jdC8mt5os7"],
+          "originPlayers": ["YsoCa6GoTzybbd7iK", "9ATXJkGeR6yWRiJjh"],
+          "originState": "approved",
+          "playersCache": [
+            {
+              "_id": "YsoCa6GoTzybbd7iK",
+              "firstName": "Erik",
+              "lastName": "Imbach",
+              "fullName": "Erik Imbach",
+              "club": "Soester TV von 1862 e.V.",
+              "clubLogo": "img/clubs/GyK75eP4201.png",
+              "rankings": {
+                "h": {
+                  "dvvRank": null,
+                  "dvvScore": null,
+                  "quotient": 19.25,
+                  "quotientTournaments": ["kwt8ZP6QtcAoP9kKv"],
+                  "tournamentCount": 21,
+                  "wvvRank": 397,
+                  "wvvScore": 154,
+                  "wvvScoreTournaments": ["kwt8ZP6QtcAoP9kKv"]
+                }
+              }
+            }
+          ],
+          "signupDate": { "$date": 1780246862704 },
+          "state": "approved",
+          "skipAdmissionConstraints": [],
+          "allocation": {
+            "wvvScoreCurrentTeam": 170,
+            "dvvScoreCurrentTeam": 0,
+            "quotientCurrentTeam": 14.375,
+            "wvvScore": 170,
+            "dvvScore": 0,
+            "quotient": 14.375,
+            "place": 1,
+            "type": "time"
+          },
+          "isEarly": true,
+          "wvvScore": 0,
+          "wvvScoreAdditional": {},
+          "dvvScore": 0,
+          "noGameWon": false,
+          "seed": 7
+        }
+      ],
+      "players": [
+        {
+          "_id": "24zDbgsZqZxfWvTXi",
+          "emails": [ { "verified": true } ],
+          "profile": {
+            "firstName": "Maximilian",
+            "lastName": "Schmidt",
+            "isExternalClub": false,
+            "club": "GyK75eP4210",
+            "instagram": "Maxxapr",
+            "rankings": {
+              "2026": {
+                "h": {
+                  "dvvRank": null,
+                  "dvvScore": null,
+                  "quotient": 19.2,
+                  "quotientTournaments": ["ZAA2MeRfWKJLbHvwk"],
+                  "tournamentCount": 5,
+                  "wvvRank": 601,
+                  "wvvScore": 96,
+                  "wvvScoreTournaments": ["ZAA2MeRfWKJLbHvwk"]
+                }
+              }
+            }
+          }
+        }
+      ],
+      "clubs": [
+        {
+          "_id": "GyK75eP107",
+          "pheonixId": 107,
+          "phoenixId": 107,
+          "name": "SuS Oberaden 1921 e.V.",
+          "district": "Westfalen-Süd",
+          "playingDistrict": "Unna",
+          "samsId": 37922037,
+          "samsUuid": "9876f49a-e06c-4560-9127-bb7e069214a3",
+          "logo": "img/clubs/GyK75eP107.JPG",
+          "updatedAt": { "$date": 1777169515404 }
+        }
+      ]
+    }
+  },
+
+  "users.searchPlayers": {
+    "_note": "Flat list ranked by fuzzy 'score' (higher = better). profile here is minimal: firstName/lastName and sometimes clubCache. The _id is the partnerId used to register.",
+    "request": {
+      "msg": "method",
+      "method": "users.searchPlayers",
+      "params": [ "searchText", { "showUnverified": false, "series": "string|null" } ],
+      "id": "string"
+    },
+    "response": [
+      {
+        "_id": "2sbZDT3KvcMLCGNKk",
+        "profile": { "firstName": "Martin", "lastName": "Schmidt", "clubCache": "SSF Bonn 1905 e.V." },
+        "score": 11.625
+      }
+    ]
+  },
+
+  "tournament.registration": {
+    "_note": "THE WRITE CALL. Self-registers the logged-in user + partner. You are implicit; only the partnerId is passed. On success returns a result (not yet captured against a successful run); on failure the DDP message carries an 'error' object with German 'reason' text (e.g. license missing, already registered, not open yet). 'tournament.addRegistration' (tournamentId, p1, p2) is the admin-only 3-arg variant and returns 403 for normal players.",
+    "request": {
+      "msg": "method",
+      "method": "tournament.registration",
+      "params": [ "tournamentId", "partnerId" ],
+      "id": "string"
+    },
+    "response": { "_unknown": "Not captured — a real successful registration has intentionally not been run." },
+    "errorShape": {
+      "msg": "result",
+      "id": "string",
+      "error": { "error": 403, "reason": "string (German)", "message": "string", "errorType": "Meteor.Error" }
+    }
+  }
+}

@@ -1,0 +1,95 @@
+<UserControl x:Class="BeachBot.Desktop.Views.ConfirmationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:BeachBot.Desktop.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:ConfirmationViewModel}">
+    <UserControl.Resources>
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+        <Style x:Key="Value" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Border Style="{StaticResource Card}" Width="460" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24">
+            <StackPanel>
+                <TextBlock Text="Confirm registration" Style="{StaticResource Heading}" />
+                <TextBlock Text="Review the details, then schedule the registration."
+                           Style="{StaticResource Subheading}" />
+
+                <!-- Tournament -->
+                <TextBlock Text="TOURNAMENT" Style="{StaticResource SectionTitle}" Margin="0,8,0,8" />
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Name" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding TournamentName}" Style="{StaticResource Value}" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="City" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding City}" Style="{StaticResource Value}" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Series / Category" Style="{StaticResource Label}" />
+                    <TextBlock Style="{StaticResource Value}">
+                        <Run Text="{Binding Series, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding Category, Mode=OneWay}" />
+                    </TextBlock>
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Team size" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding TeamSizeText}" Style="{StaticResource Value}" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Game date" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding GameDate, Converter={StaticResource LocalDateTime}, ConverterParameter='dd.MM.yyyy', Mode=OneWay}"
+                               Style="{StaticResource Value}" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Registration opens" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding RegistrationOpensAt, Converter={StaticResource LocalDateTime}, Mode=OneWay}"
+                               Style="{StaticResource Value}" />
+                </Grid>
+
+                <!-- Partner -->
+                <TextBlock Text="PARTNER" Style="{StaticResource SectionTitle}" Margin="0,14,0,8" />
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Name" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding PartnerName}" Style="{StaticResource Value}" />
+                </Grid>
+                <Grid Margin="0,0,0,6">
+                    <TextBlock Text="Club" Style="{StaticResource Label}" />
+                    <TextBlock Text="{Binding PartnerClub}" Style="{StaticResource Value}" />
+                </Grid>
+
+                <!-- Already-open note -->
+                <Border Background="{StaticResource Surface2Brush}" CornerRadius="6" Padding="12" Margin="0,14,0,0"
+                        Visibility="{Binding RegistrationAlreadyOpen, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="Registration is already open — this will be submitted immediately."
+                               Foreground="{StaticResource WarningBrush}" FontSize="12" />
+                </Border>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" Margin="0,12,0,0"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVis}}" />
+
+                <!-- Actions -->
+                <Grid Margin="0,20,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Cancel" Style="{StaticResource SubtleButton}"
+                            Margin="0,0,6,0" HorizontalAlignment="Stretch" Command="{Binding CancelCommand}" />
+                    <Button Grid.Column="1" Content="Schedule registration" Style="{StaticResource AccentButton}"
+                            Margin="6,0,0,0" HorizontalAlignment="Stretch" Command="{Binding ConfirmCommand}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
