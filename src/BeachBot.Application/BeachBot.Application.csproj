@@ -5,6 +5,11 @@
     <ProjectReference Include="..\BeachBot.Api\BeachBot.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Windows DPAPI, used to encrypt the stored "remember me" resume token at rest. -->
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

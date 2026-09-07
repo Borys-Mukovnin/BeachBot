@@ -1,9 +1,9 @@
 {
-  "_about": "Reverse-engineered DDP (Meteor) API for beachvolleyball.nrw. Each entry describes one WebSocket method: its request (the DDP 'method' message) and a representative real response. Use the response examples as a base for DTOs. Captured 2026-06-17 against wss://www.beachvolleyball.nrw/websocket.",
+  "_about": "DDP (Meteor) API for beachvolleyball.nrw. Each entry describes one WebSocket method: its request (the DDP 'method' message) and a representative response. All values in the examples are SYNTHETIC sample data — use the response shapes as a base for DTOs. Endpoint: wss://www.beachvolleyball.nrw/websocket.",
   "_conventions": {
     "transport": "DDP over raw WebSocket. A call is sent as {\"msg\":\"method\",\"method\":<name>,\"params\":[...],\"id\":<string>} and the reply is {\"msg\":\"result\",\"id\":<same>,\"result\":<payload>} or {\"msg\":\"result\",\"id\":<same>,\"error\":{...}}.",
     "ejsonDate": "All timestamps are EJSON-wrapped: {\"$date\": <unixMillis:int>}. Model as a value object / epoch-millis long.",
-    "ids": "All _id fields are Meteor random strings (17 chars), e.g. 'BZatkurzpjZZho2Hs'. Series/category ids are short slugs ('h','m','b','d').",
+    "ids": "All _id fields are Meteor random strings (17 chars), e.g. 'SampleTournId0001'. Series/category ids are short slugs ('h','m','b','d').",
     "nullable": "Fields shown with null in examples are nullable. Date fields can also be null. rankings maps may be empty.",
     "maps": "scoreDistribution / prizeDistribution / prizeMinimum / dvvIds are objects keyed by a STRING (bracket size or year) -> value. rankings is keyed by series-id -> ranking object.",
     "germanText": "String content may contain German text and umlauts (UTF-8)."
@@ -26,8 +26,8 @@
       "id": "string"
     },
     "response": {
-      "id": "Fqj2E4DQFJv2zzhnm",
-      "token": "9g1GeWl-qkt7xEJYkkd5EyCw4R5mCJLm7P5XiRf-Eiw",
+      "id": "SampleLoginId0001",
+      "token": "EXAMPLE_RESUME_TOKEN",
       "tokenExpires": { "$date": 1789468270474 },
       "type": "password"
     }
@@ -44,12 +44,12 @@
     "response": {
       "tournaments": [
         {
-          "_id": "BZatkurzpjZZho2Hs",
+          "_id": "SampleTournId0001",
           "createdAt": { "$date": 1779961640799 },
           "series": "h",
           "category": "b",
-          "facility": "ZsKdZLmXoArcCdodp",
-          "cityCache": "Gütersloh",
+          "facility": "SampleFacility001",
+          "cityCache": "Musterstadt",
           "teamType": "default",
           "teamSize": 2,
           "checkInDeadline": { "$date": 1780912800000 },
@@ -60,14 +60,14 @@
           "teamCountCurrent": 10,
           "teamCountApproved": 9,
           "teamCountEndResults": 0,
-          "host": "eGFRmdi9gMQouL4rx",
+          "host": "SampleHostId00001",
           "state": "approved",
           "endResultsPublished": false,
           "gamesPublished": true,
           "publishedAt": { "$date": 1779966864108 },
           "seriesLink": { "_id": "h", "name": "Herren", "teamConstraints": { "gender": "male" } },
           "categoryLink": { "_id": "b", "name": "B" },
-          "resolvedName": "Gütersloh"
+          "resolvedName": "Musterstadt"
         }
       ],
       "tournamentsCount": 632
@@ -84,11 +84,11 @@
     },
     "response": {
       "tournament": {
-        "_id": "BZatkurzpjZZho2Hs",
+        "_id": "SampleTournId0001",
         "series": "h",
         "category": "b",
-        "facility": "ZsKdZLmXoArcCdodp",
-        "cityCache": "Gütersloh",
+        "facility": "SampleFacility001",
+        "cityCache": "Musterstadt",
         "relatedTournaments": [],
         "relatedTournamentsSharePrize": false,
         "teamType": "default",
@@ -121,7 +121,7 @@
         "teamCountEndResults": 0,
         "suggestionComment": "Turnierbeginn 17:15 Uhr.\n...",
         "dvv": {},
-        "host": "eGFRmdi9gMQouL4rx",
+        "host": "SampleHostId00001",
         "additionalHosts": [],
         "admissionAllocation": {
           "wildcardsHost": 1,
@@ -215,18 +215,18 @@
         "$type": "Astronomy",
         "$value": {
           "class": "Facility",
-          "values": "{\"_id\":\"ZsKdZLmXoArcCdodp\",\"title\":\"Gütersloher TV\",\"courtCount\":3,\"publicAccess\":true,\"location\":{\"...\":\"nested Astronomy-wrapped Location with street, houseNumber, zipCode, city, formattedAddress, gpsCoordinate\"}}",
+          "values": "{\"_id\":\"SampleFacility001\",\"title\":\"Sample Beach Arena\",\"courtCount\":3,\"publicAccess\":true,\"location\":{\"...\":\"nested Astronomy-wrapped Location with street, houseNumber, zipCode, city, formattedAddress, gpsCoordinate\"}}",
           "isNew": true
         }
       },
       "gameMode": { "_id": "poolPlay9Sing", "name": "9 Pool Play", "hasTree": true },
       "resolvedHost": {
         "isAdmin": false,
-        "_id": "eGFRmdi9gMQouL4rx",
-        "name": "Beachvolleyball Gütersloher TV",
-        "club": "Gütersloher TV v. 1879 e.V.",
-        "email": "beachguetersloh@web.de",
-        "phone": "+4917672666065"
+        "_id": "SampleHostId00001",
+        "name": "Beachvolleyball Sample TV",
+        "club": "Sample TV v. 1879 e.V.",
+        "email": "kontakt@example.com",
+        "phone": "+49 000 0000000"
       }
     }
   },
@@ -242,28 +242,28 @@
     "response": {
       "teams": [
         {
-          "_id": "tCS68bCAtW4AFs6X9",
-          "players": ["YsoCa6GoTzybbd7iK", "Dz67SK4jdC8mt5os7"],
-          "originPlayers": ["YsoCa6GoTzybbd7iK", "9ATXJkGeR6yWRiJjh"],
+          "_id": "SampleTeamId00001",
+          "players": ["SamplePlayerId001", "SamplePlayerId002"],
+          "originPlayers": ["SamplePlayerId001", "SamplePlayerId003"],
           "originState": "approved",
           "playersCache": [
             {
-              "_id": "YsoCa6GoTzybbd7iK",
-              "firstName": "Erik",
-              "lastName": "Imbach",
-              "fullName": "Erik Imbach",
-              "club": "Soester TV von 1862 e.V.",
-              "clubLogo": "img/clubs/GyK75eP4201.png",
+              "_id": "SamplePlayerId001",
+              "firstName": "Alex",
+              "lastName": "Muster",
+              "fullName": "Alex Muster",
+              "club": "Sample TV 1900 e.V.",
+              "clubLogo": "img/clubs/SampleClub01.png",
               "rankings": {
                 "h": {
                   "dvvRank": null,
                   "dvvScore": null,
                   "quotient": 19.25,
-                  "quotientTournaments": ["kwt8ZP6QtcAoP9kKv"],
+                  "quotientTournaments": ["SamplePastTourn01"],
                   "tournamentCount": 21,
                   "wvvRank": 397,
                   "wvvScore": 154,
-                  "wvvScoreTournaments": ["kwt8ZP6QtcAoP9kKv"]
+                  "wvvScoreTournaments": ["SamplePastTourn01"]
                 }
               }
             }
@@ -291,25 +291,25 @@
       ],
       "players": [
         {
-          "_id": "24zDbgsZqZxfWvTXi",
+          "_id": "SamplePlayerId004",
           "emails": [ { "verified": true } ],
           "profile": {
-            "firstName": "Maximilian",
-            "lastName": "Schmidt",
+            "firstName": "Sam",
+            "lastName": "Beispiel",
             "isExternalClub": false,
-            "club": "GyK75eP4210",
-            "instagram": "Maxxapr",
+            "club": "SampleClub02",
+            "instagram": "sam_beispiel",
             "rankings": {
               "2026": {
                 "h": {
                   "dvvRank": null,
                   "dvvScore": null,
                   "quotient": 19.2,
-                  "quotientTournaments": ["ZAA2MeRfWKJLbHvwk"],
+                  "quotientTournaments": ["SamplePastTourn02"],
                   "tournamentCount": 5,
                   "wvvRank": 601,
                   "wvvScore": 96,
-                  "wvvScoreTournaments": ["ZAA2MeRfWKJLbHvwk"]
+                  "wvvScoreTournaments": ["SamplePastTourn02"]
                 }
               }
             }
@@ -318,15 +318,15 @@
       ],
       "clubs": [
         {
-          "_id": "GyK75eP107",
-          "pheonixId": 107,
-          "phoenixId": 107,
-          "name": "SuS Oberaden 1921 e.V.",
-          "district": "Westfalen-Süd",
-          "playingDistrict": "Unna",
-          "samsId": 37922037,
-          "samsUuid": "9876f49a-e06c-4560-9127-bb7e069214a3",
-          "logo": "img/clubs/GyK75eP107.JPG",
+          "_id": "SampleClub03",
+          "pheonixId": 100,
+          "phoenixId": 100,
+          "name": "Sample SuS 1921 e.V.",
+          "district": "Sample District",
+          "playingDistrict": "Sampletown",
+          "samsId": 10000000,
+          "samsUuid": "00000000-0000-0000-0000-000000000000",
+          "logo": "img/clubs/SampleClub03.JPG",
           "updatedAt": { "$date": 1777169515404 }
         }
       ]
@@ -343,8 +343,8 @@
     },
     "response": [
       {
-        "_id": "2sbZDT3KvcMLCGNKk",
-        "profile": { "firstName": "Martin", "lastName": "Schmidt", "clubCache": "SSF Bonn 1905 e.V." },
+        "_id": "SamplePlayerId005",
+        "profile": { "firstName": "Chris", "lastName": "Muster", "clubCache": "Sample SV 1905 e.V." },
         "score": 11.625
       }
     ]

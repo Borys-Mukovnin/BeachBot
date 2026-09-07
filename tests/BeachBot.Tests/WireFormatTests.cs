@@ -17,7 +17,7 @@ public class WireFormatTests
     public void EjsonDate_Parses_DollarDate()
     {
         var dto = JsonSerializer.Deserialize<LoginResultDto>(
-            """{"id":"Fqj2E4DQFJv2zzhnm","token":"abc","tokenExpires":{"$date":1789468270474},"type":"password"}""",
+            """{"id":"SampleLoginId0001","token":"abc","tokenExpires":{"$date":1789468270474},"type":"password"}""",
             Json)!;
 
         Assert.Equal("abc", dto.Token);
@@ -38,10 +38,10 @@ public class WireFormatTests
         const string json = """
         {
           "tournaments": [{
-            "_id": "BZatkurzpjZZho2Hs",
+            "_id": "SampleTournId0001",
             "series": "h",
             "category": "b",
-            "cityCache": "Gütersloh",
+            "cityCache": "Musterstadt",
             "teamSize": 2,
             "maxTeams": 9,
             "checkInDeadline": { "$date": 1780912800000 },
@@ -50,7 +50,7 @@ public class WireFormatTests
             "teamCountCurrent": 0,
             "seriesLink": { "_id": "h", "name": "Herren", "teamConstraints": { "gender": "male" } },
             "categoryLink": { "_id": "b", "name": "B" },
-            "resolvedName": "Gütersloh"
+            "resolvedName": "Musterstadt"
           }],
           "tournamentsCount": 632
         }
@@ -60,9 +60,9 @@ public class WireFormatTests
         Assert.Equal(632, dto.TournamentsCount);
         var t = DtoMapper.MapTournament(Assert.Single(dto.Tournaments));
 
-        Assert.Equal("BZatkurzpjZZho2Hs", t.Id);
-        Assert.Equal("Gütersloh", t.Name);
-        Assert.Equal("Gütersloh", t.City);
+        Assert.Equal("SampleTournId0001", t.Id);
+        Assert.Equal("Musterstadt", t.Name);
+        Assert.Equal("Musterstadt", t.City);
         Assert.Equal("h", t.SeriesId);
         Assert.Equal("Herren", t.SeriesName);
         Assert.Equal("male", t.Gender);
@@ -80,10 +80,10 @@ public class WireFormatTests
         const string json = """
         {
           "tournament": {
-            "_id": "BZatkurzpjZZho2Hs",
+            "_id": "SampleTournId0001",
             "series": "h",
             "category": "b",
-            "cityCache": "Gütersloh",
+            "cityCache": "Musterstadt",
             "teamSize": 2,
             "maxTeams": 9,
             "teamCountCurrent": 0,
@@ -108,16 +108,16 @@ public class WireFormatTests
     public void SearchPlayers_DeserializesAndMaps()
     {
         const string json = """
-        [{ "_id": "2sbZDT3KvcMLCGNKk",
-           "profile": { "firstName": "Martin", "lastName": "Schmidt", "clubCache": "SSF Bonn 1905 e.V." },
+        [{ "_id": "SamplePlayerId005",
+           "profile": { "firstName": "Chris", "lastName": "Muster", "clubCache": "Sample SV 1905 e.V." },
            "score": 11.625 }]
         """;
 
         var dtos = JsonSerializer.Deserialize<List<SearchPlayerDto>>(json, Json)!;
         var player = DtoMapper.MapPlayer(Assert.Single(dtos));
 
-        Assert.Equal("2sbZDT3KvcMLCGNKk", player.Id);
-        Assert.Equal("Martin Schmidt", player.FullName);
-        Assert.Equal("SSF Bonn 1905 e.V.", player.Club);
+        Assert.Equal("SamplePlayerId005", player.Id);
+        Assert.Equal("Chris Muster", player.FullName);
+        Assert.Equal("Sample SV 1905 e.V.", player.Club);
     }
 }
